@@ -246,6 +246,13 @@ public:
 		depositCheque,	// this item is a request to deposit a cheque
 		atDepositCheque,// this item is a server response to that request.
 // ------------------------------------------------------------------------------
+                // BLOCKCHAIN CURRENCY BAIL-IN, BAIL-OUT TX TYPES FOR VOTING POOL USE
+                bailment,            // this item is a user request for a bailment (deposit) address
+                atBailment,          // this item is a response to a bailment, signed by the transaction server
+                
+                outbailment,         // this item is a user request for an outBailment (withdrawal) to a user-specified receiving address
+                atOutbailment,       // this item is a response to an outbailment, signed by the transaction server
+// ------------------------------------------------------------------------------
 		// PAYING DIVIDEND ON SHARES OF STOCK
 		payDividend,    // this item is a request to pay a dividend.
 		atPayDividend,  // the server reply to that request.
