@@ -246,6 +246,7 @@ class OTServer
 	static bool			__transact_transfer; // Bool.
 	static bool			__transact_withdrawal; // Bool.
 	static bool			__transact_deposit; // Bool.
+        static bool                     __transact_bailment; // Bool.
 	static bool			__transact_withdraw_voucher; // Bool.
 	static bool			__transact_deposit_cheque; // Bool.
 	static bool			__transact_pay_dividend; // Bool.
@@ -469,6 +470,8 @@ public:
 	void NotarizeTransfer(OTPseudonym & theNym, OTAccount & theFromAccount, OTTransaction & tranIn, OTTransaction & tranOut, bool & bOutSuccess);
 	void NotarizeDeposit(OTPseudonym & theNym, OTAccount & theAccount, OTTransaction & tranIn, OTTransaction & tranOut, bool & bOutSuccess);
 	void NotarizeWithdrawal(OTPseudonym & theNym, OTAccount & theAccount, OTTransaction & tranIn, OTTransaction & tranOut, bool & bOutSuccess);
+	// ---------------------------------------------------------------------------------
+	void NotarizeBailment(OTPseudonym & theNym, OTAccount & theAccount, OTTransaction & tranIn, OTTransaction & tranOut, bool & bOutSuccess);
 	// ---------------------------------------------------------------------------------
 	void NotarizeProcessInbox(OTPseudonym & theNym, OTAccount & theAccount, OTTransaction & tranIn, OTTransaction & tranOut, bool & bOutSuccess);
 	void NotarizeProcessNymbox(OTPseudonym & theNym, OTTransaction & tranIn, OTTransaction & tranOut, bool & bOutSuccess);

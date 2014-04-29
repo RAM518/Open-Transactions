@@ -186,6 +186,16 @@ char const * const __TypeStrings[] =
 	"withdrawal",		// this transaction is a withdrawal of bearer tokens
 	"atWithdrawal",		// reply from the server regarding a withdrawal request
 	// --------------------------------------------------------------------------------------
+        "bailment",            // this item is a user request for a bailment (deposit) address
+        "atBailment",          // this item is a response to a bailment, signed by the transaction server
+        "initiatedBailment",   // this is a receipt for a user-request for a multi-sig deposit address
+        "pendingBailment",     // this item is an inbox receipt containing a BIP70 payment request for the user, signed by the transaction server
+        "completedBailment",   // this item is an inbox receipt containing confirmation of successful bailment.
+        "outbailment",         // this item is a user request for an outBailment (withdrawal) to a user-specified receiving address
+        "atOutbailment",       // this item is a response to an outbailment, signed by the transaction server
+        "pendingOutbailment",  // this item is an outbox receipt requesting a withdrawal to the user-specified deposit address
+        "outbailmentReceipt",  // this item is an inbox receipt containing confirmation of successful outBailment.
+	// --------------------------------------------------------------------------------------
 	"marketOffer",		// this transaction is a market offer
 	"atMarketOffer",	// reply from the server regarding a market offer
 	// --------------------------------------------------------------------------------------

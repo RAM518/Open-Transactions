@@ -232,6 +232,7 @@ bool	OTServer::__transact_process_inbox = true; // Bool.
 bool	OTServer::__transact_transfer = true; // Bool.
 bool	OTServer::__transact_withdrawal = true; // Bool.
 bool	OTServer::__transact_deposit = true; // Bool.
+bool    OTServer::__transact_bailment = true; // Bool.
 bool	OTServer::__transact_withdraw_voucher = true; // Bool.
 bool	OTServer::__transact_deposit_cheque = true; // Bool.
 bool	OTServer::__transact_pay_dividend = true; // Bool.
@@ -4930,8 +4931,90 @@ void OTServer::NotarizeWithdrawal(OTPseudonym & theNym, OTAccount & theAccount,
 
 
 
+//
+void OTServer::NotarizeBailment(OTPseudonym & theNym, OTAccount & theAccount,
+								  OTTransaction & tranIn, OTTransaction & tranOut, bool & bOutSuccess)
+{
+    	// The outgoing transaction is an "atBailment", that is, "a reply to the bailment request"
+	tranOut.SetType(OTTransaction::atBailment);
+	OTItem * pItem			= NULL;
+	OTItem * pBalanceItem	= NULL;
+	OTItem * pResponseItem	= NULL;
+	OTItem * pResponseBalanceItem	= NULL;
+
+	// The incoming transaction may be sent to inboxes and outboxes, and it
+	// will probably be bundled in our reply to the user as well. Therefore,
+	// let's grab it as a string.
+	OTString strInReferenceTo;
+	OTString strBalanceItem;
+
+	// Grab the actual server ID from this object, and use it as the server ID here.
+        // asset type specifies which type of cryptocurrency the user wants to deposit
+	const OTIdentifier	SERVER_ID(m_strServerID),		USER_ID(theNym),	ACCOUNT_ID(theAccount),
+						ASSET_TYPE_ID(theAccount.GetAssetTypeID());
+
+	OTString strUserID(USER_ID), strAccountID(ACCOUNT_ID);
+    // --------------------
+	pResponseBalanceItem = OTItem::CreateItemFromTransaction(tranOut, OTItem::atBalanceStatement);
+	pResponseBalanceItem->SetStatus(OTItem::rejection); // the default.
+	tranOut.AddItem(*pResponseBalanceItem); // the Transaction's destructor will cleanup the item. It "owns" it now.
+    // --------------------
+	pResponseItem = OTItem::CreateItemFromTransaction(tranOut, OTItem::atBailment);
+	pResponseItem->SetStatus(OTItem::rejection); // the default.
+	tranOut.AddItem(*pResponseItem); // the Transaction's destructor will cleanup the item. It "owns" it now.
+    // --------------------
+
+	if (false == NYM_IS_ALLOWED(strUserID.Get(), __transact_bailment))
+	{
+		OTLog::vOutput(0, "OTServer::Bailment: User %s cannot do this transaction (All acct-to-acct transfers are disallowed in server.cfg)\n",
+					   strUserID.Get());
+	}
+        // Check for a balance agreement...
+        else if (NULL == (pBalanceItem = tranIn.GetItem(OTItem::balanceStatement)))
+        {
+                OTString strTemp(tranIn);
+                OTLog::vOutput(0, "OTServer::NotarizeDeposit: Expected OTItem::balanceStatement, but not found in trans # %ld: \n\n%s\n\n",
+                       tranIn.GetTransactionNum(), strTemp.Exists() ? strTemp.Get() : " (ERROR LOADING TRANSACTION INTO STRING) ");
+        }
+	// For now, there should only be one of these bailment items inside the transaction.
+        else if (NULL == (pItem = tranIn.GetItem(OTItem::bailment)))
+        {
+                OTString strTemp(tranIn);
+                OTLog::vOutput(0, "OTServer::NotarizeBailment: Expected OTItem::bailment in trans# %ld: \n\n%s\n\n",
+                       tranIn.GetTransactionNum(), strTemp.Exists() ? strTemp.Get() : " (ERROR LOADING TRANSACTION INTO STRING) ");
+        }
+	else
+	{
+            	// The response item, as well as the inbox and outbox items, will contain a copy
+		// of the request item. So we save it into a string here so they can all grab a copy of it
+		// into their "in reference to" fields.
+		pItem->SaveContractRaw(strInReferenceTo);
+		pBalanceItem->SaveContractRaw(strBalanceItem);
+
+		// Server response item being added to server response transaction (tranOut)
+		pResponseItem->SetReferenceString(strInReferenceTo); // the response item carries a copy of what it's responding to.
+		pResponseItem->SetReferenceToNum(pItem->GetTransactionNum()); // This response item is IN RESPONSE to pItem and its Owner Transaction.
+
+		pResponseBalanceItem->SetReferenceString(strBalanceItem); // the response item carries a copy of what it's responding to.
+		pResponseBalanceItem->SetReferenceToNum(pItem->GetTransactionNum()); // This response item is IN RESPONSE to pItem and its Owner Transaction.
+
+                OTAccount * pDestinationAcct = OTAccount::LoadExistingAccount(ACCOUNT_ID, SERVER_ID);
+
+		// Only accept bailment (deposit) of positive amounts.
+		if (0 > pItem->GetAmount())
+		{
+			OTLog::Output(0, "OTServer::NotarizeBailment: Failure: Attempt to deposit negative amount.\n");
+		}
+                // Is the destination a legitimate other user's acct, or is it just an internal server account?
+		else if (pDestinationAcct->IsInternalServerAcct())
+		{
+			OTLog::Output(0, "OTServer::NotarizeBailment: Failure: Bailment account is used internally by the server, and is not a valid recipient for this transaction.\n");
+		}
 
 
+        }
+
+}
 
 
 /*
@@ -9681,6 +9764,17 @@ void OTServer::NotarizeTransaction(OTPseudonym & theNym, OTTransaction & tranIn,
 					NotarizeDeposit(theNym, theFromAccount, tranIn, tranOut, bOutSuccess);
 					bSuccess = true;
 					theReplyItemType = OTItem::atDeposit;
+					break;
+
+       				// BAILMENT	(request for cryptocurrency deposit address)
+				// Bob sends a signed request to the server asking for a
+                                // BIP70 Payment Request to be generated by the voting pool
+                                // Here we just are acknowledging the request and relaying it to the audit stream
+				case OTTransaction::bailment:
+					OTLog::Output(0, "NotarizeTransaction type: Bailment\n");
+					NotarizeBailment(theNym, theFromAccount, tranIn, tranOut, bOutSuccess);
+					bSuccess = true;
+					theReplyItemType = OTItem::atBailment;
 					break;
 
 					// PAY DIVIDEND
