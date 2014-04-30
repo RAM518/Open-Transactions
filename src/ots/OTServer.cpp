@@ -4955,9 +4955,9 @@ void OTServer::NotarizeBailment(OTPseudonym & theNym, OTAccount & theAccount,
 
 	OTString strUserID(USER_ID), strAccountID(ACCOUNT_ID);
     // --------------------
-//	pResponseBalanceItem = OTItem::CreateItemFromTransaction(tranOut, OTItem::atBalanceStatement);
-//	pResponseBalanceItem->SetStatus(OTItem::rejection); // the default.
-//	tranOut.AddItem(*pResponseBalanceItem); // the Transaction's destructor will cleanup the item. It "owns" it now.
+	pResponseBalanceItem = OTItem::CreateItemFromTransaction(tranOut, OTItem::atBalanceStatement);
+	pResponseBalanceItem->SetStatus(OTItem::rejection); // the default.
+	tranOut.AddItem(*pResponseBalanceItem); // the Transaction's destructor will cleanup the item. It "owns" it now.
     // --------------------
 	pResponseItem = OTItem::CreateItemFromTransaction(tranOut, OTItem::atBailment);
 	pResponseItem->SetStatus(OTItem::rejection); // the default.
@@ -4970,12 +4970,12 @@ void OTServer::NotarizeBailment(OTPseudonym & theNym, OTAccount & theAccount,
 					   strUserID.Get());
 	}
         // Check for a balance agreement...
-//        else if (NULL == (pBalanceItem = tranIn.GetItem(OTItem::balanceStatement)))
-//        {
-//                OTString strTemp(tranIn);
-//                OTLog::vOutput(0, "OTServer::NotarizeDeposit: Expected OTItem::balanceStatement, but not found in trans # %ld: \n\n%s\n\n",
-//                       tranIn.GetTransactionNum(), strTemp.Exists() ? strTemp.Get() : " (ERROR LOADING TRANSACTION INTO STRING) ");
-//        }
+        else if (NULL == (pBalanceItem = tranIn.GetItem(OTItem::balanceStatement)))
+        {
+                OTString strTemp(tranIn);
+                OTLog::vOutput(0, "OTServer::NotarizeBailment: Expected OTItem::balanceStatement, but not found in trans # %ld: \n\n%s\n\n",
+                       tranIn.GetTransactionNum(), strTemp.Exists() ? strTemp.Get() : " (ERROR LOADING TRANSACTION INTO STRING) ");
+        }
 	// For now, there should only be one of these bailment items inside the transaction.
         else if (NULL == (pItem = tranIn.GetItem(OTItem::bailment)))
         {
@@ -5027,25 +5027,37 @@ void OTServer::NotarizeBailment(OTPseudonym & theNym, OTAccount & theAccount,
 			// Okay then, everything checks out. Let's add this to the recipient's inbox.
 			// IF it can be loaded up from file, or generated, that is.
 			// Load the inbox in case it already exists
-			OTLedger theToInbox (pItem->GetDestinationAcctID(), SERVER_ID);
+			OTLedger theToInbox(pItem->GetDestinationAcctID(), SERVER_ID), theToOutbox(USER_ID, pItem->GetDestinationAcctID(), SERVER_ID);
 			bool bSuccessLoadingInbox = theToInbox.LoadInbox();
+			bool bSuccessLoadingOutbox = theToOutbox.LoadOutbox();
 			if (true == bSuccessLoadingInbox)
 				bSuccessLoadingInbox	= theToInbox.VerifyAccount(m_nymServer);
 			else
 				OTLog::Error("OTServer::NotarizeBailment: Error loading depositor inbox.\n");
+			if (true == bSuccessLoadingOutbox)
+				bSuccessLoadingOutbox	= theToOutbox.VerifyAccount(m_nymServer);
+			else
+				OTLog::Error("OTServer::NotarizeBailment: Error loading 'from' outbox.\n");
 
                         OTLedger * pInbox = theAccount.LoadInbox(m_nymServer);
+                        OTLedger * pOutbox = theAccount.LoadOutbox(m_nymServer);
                         OTCleanup<OTLedger> theInboxAngel(pInbox);
+                        OTCleanup<OTLedger> theOutboxAngel(pOutbox);
 			if (NULL == pInbox) // || !pInbox->VerifyAccount(m_nymServer)) OTAccount::Load (above) already verifies.
 			{
 				OTLog::Error("Error loading or verifying inbox.\n");
 			}
-			else if (false == bSuccessLoadingInbox)
+			else if (NULL == pOutbox) // || !pOutbox->VerifyAccount(m_nymServer)) OTAccount::Load (above) already verifies.
+			{
+				OTLog::Error("Error loading or verifying outbox.\n");
+			}
+			// --------------------------------------------------------------------
+			else if (false == bSuccessLoadingInbox || false == bSuccessLoadingOutbox)
 			{
 				OTLog::Error("ERROR generating ledger in OTServer::NotarizeBailment.\n");
 			}
 			else
-			{       // everything checks out, generate initiateBailment receipt message here
+			{      // everything checks out, generate initiateBailment receipt message here
 				// Generate new transaction number for this new transaction
 				// todo check this generation for failure (can it fail?)
 				int64_t lNewTransactionNumber = 0;
@@ -5064,17 +5076,17 @@ void OTServer::NotarizeBailment(OTPseudonym & theNym, OTAccount & theAccount,
 
 				// balance agreement should be trivial, no change is needed to the balance right now
                                 // is this needed? (RAM)
-//				if (!(pBalanceItem->VerifyBalanceStatement(0, // no change to balance
-//														   theNym,
-//														   *pInbox,
-//														   *pOutbox,
-//														   theFromAccount,
-//														   tranIn,
-//														   lNewTransactionNumber))) {
-//
-//					OTLog::vOutput(0, "ERROR verifying balance statement while performing bailment request. Acct ID:\n%s\n",
-//								   strAccountID.Get());
-//                                } else {
+				if (!(pBalanceItem->VerifyBalanceStatement(0, // no change to balance
+														   theNym,
+														   *pInbox,
+														   *pOutbox,
+														   theAccount,
+														   tranIn,
+														   lNewTransactionNumber))) {
+
+					OTLog::vOutput(0, "ERROR verifying balance statement while performing bailment request. Acct ID:\n%s\n",
+								   strAccountID.Get());
+                                } else {
                                         pResponseBalanceItem->SetStatus(OTItem::acknowledgement); // the balance agreement (just above) was successful.
                                         pResponseBalanceItem->SetNewOutboxTransNum(lNewTransactionNumber); // So the receipt will show that the client's "1" in the outbox is now actually "34" or whatever, issued by the server as part of successfully processing the transaction.
                                         // Here the transaction we just created is actually added to the source acct's inbox.
@@ -5095,7 +5107,7 @@ void OTServer::NotarizeBailment(OTPseudonym & theNym, OTAccount & theAccount,
                                         bOutSuccess = true;  // The bailment (deposit request) was successfully processed into an initiateBailment receipt
                      OTLog::Output(1, "OTServer::NotarizeBailment: .....SUCCESS -- deposit request processed into initiateBailment receipt.\nPlease wait for pendingBailment containing a BIP70 payment request.\n");
 
-//                                } // end balance agreement case
+                                } // end balance agreement case
                         } // end inbox success loading case
                 } // end bailment pre-check if/else cases
         } // end nym_is_allowed, balance statement check, bailment item check cases
