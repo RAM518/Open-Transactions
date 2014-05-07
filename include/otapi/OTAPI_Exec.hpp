@@ -3176,6 +3176,28 @@ public:
 		const std::string & NOTE
 		);
 
+
+	/** --------------------------------------------------------------------------
+	// DEPOSIT CRYPTOCURRENCY
+	//
+        // Use this function to request a deposit address to add cryptocurrency into a server account.
+        // The cryptocurrency must, of course, be the same asset type as the account.
+	//
+	// Returns int32_t:
+	// -1 means error; no message was sent.
+	// -2 means the message was sent, but the request number must be passed as a string, so call GetLargeRequestNum.
+	// 0 means NO error, but also: no message was sent.
+	// >0 means NO error, and the message was sent, and the request number fits into an integer...
+	// ...and in fact the requestNum IS the return value!
+	// ===> In 99% of cases, this LAST option is what actually happens!!
+	*/
+        EXPORT virtual int32_t notarizeBailment(
+                const std::string & SERVER_ID,
+                const std::string & USER_ID,
+                const std::string & ACCT_ID
+                );
+
+
 	/** --------------------------------------------------------------------------
 	// GET A COPY OF MY INBOX
 	//

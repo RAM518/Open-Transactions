@@ -538,10 +538,10 @@ public:
     // is that master credentials be signed by the corresponding private key.
 	*/
     EXPORT static std::string CreateNym(const int32_t & nKeySize, const std::string & NYM_ID_SOURCE, const std::string & ALT_LOCATION);  // source and location can be empty. (OT will generate a Nym with a public key as the source.)
-    
+
     EXPORT static std::string GetNym_ActiveCronItemIDs    (const std::string & NYM_ID, const std::string & SERVER_ID);
     EXPORT static std::string GetActiveCronItem           (const std::string & SERVER_ID, int64_t lTransNum);
-    
+
 	EXPORT static std::string GetNym_SourceForID          (const std::string & NYM_ID);
 	EXPORT static std::string GetNym_AltSourceLocation    (const std::string & NYM_ID);
 
@@ -3143,6 +3143,27 @@ public:
 		const int64_t & AMOUNT,
 		const std::string & NOTE
 		);
+
+	/** --------------------------------------------------------------------------
+	// DEPOSIT CRYPTOCURRENCY
+	//
+        // Use this function to request a deposit address to add cryptocurrency into a server account.
+        // The cryptocurrency must, of course, be the same asset type as the account.
+	//
+	// Returns int32_t:
+	// -1 means error; no message was sent.
+	// -2 means the message was sent, but the request number must be passed as a string, so call GetLargeRequestNum.
+	// 0 means NO error, but also: no message was sent.
+	// >0 means NO error, and the message was sent, and the request number fits into an integer...
+	// ...and in fact the requestNum IS the return value!
+	// ===> In 99% of cases, this LAST option is what actually happens!!
+	*/
+        EXPORT static int32_t notarizeBailment(
+                const std::string & SERVER_ID,
+                const std::string & USER_ID,
+                const std::string & ACCT_ID
+                );
+
 
 	/** --------------------------------------------------------------------------
 	// GET A COPY OF MY INBOX

@@ -146,7 +146,7 @@ OTAPI_Func::OTAPI_Func(const OTAPI_Func_Type theType, const string & p_serverID,
     {
         nymID2 = p_strParam;
     }
-    else if ((theType == DELETE_ASSET_ACCT))
+    else if ((theType == DELETE_ASSET_ACCT) || (theType == BAILMENT))
     {
         accountID = p_strParam;
     }
@@ -695,6 +695,8 @@ OT_OTAPI_OT int32_t OTAPI_Func::Run()
         return OTAPI_Wrap::notarizeWithdrawal(serverID, nymID, accountID, lData);
     case WITHDRAW_VOUCHER:
         return OTAPI_Wrap::withdrawVoucher(serverID, nymID, accountID, nymID2, strData, lData);
+    case BAILMENT:
+        return OTAPI_Wrap::notarizeBailment(serverID,nymID,accountID);
     case PAY_DIVIDEND:
         return OTAPI_Wrap::payDividend(serverID, nymID, accountID, assetID, strData, lData);
     case SEND_TRANSFER:

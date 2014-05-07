@@ -5395,6 +5395,53 @@ OT_COMMANDS_OT int32_t OT_Command::details_account_balance(const string & strID)
     return 1;
 }
 
+OT_COMMANDS_OT int32_t OT_Command::main_bailment()
+{
+    string strUsage1 = "\n\n  USAGE: bailment --myacct YOUR_ACCT_ID \n";
+    OTAPI_Wrap::Output(0, strUsage);
+
+
+    // Must ALWAYS specify MyAcct, and we deposit to MyAcct's Nym
+    //
+    // Shouldn't need to specify MyPurse, since we can ONLY deposit into MyAcct of
+    // the same type as MyAcct. Thus we should ignore any other asset types or purses
+    // since they couldn't possibly be deposited into MyAcct anyway.
+    //
+
+    if (VerifyExists("MyAcct"))
+    {
+
+        // HERE, WE LOOK UP THE SERVER ID, BASED ON THE ACCOUNT ID.
+        //
+        string strServerID = OTAPI_Wrap::GetAccountWallet_ServerID(MyAcct);
+
+        if (!VerifyStringVal(strServerID))
+        {
+            OTAPI_Wrap::Output(0, "Failure: Unable to find Server ID based on myacct. Use: --myacct ACCT_ID\n");
+            OTAPI_Wrap::Output(0, "OT will find the Server based on the account.\n\n");
+            return -1;
+        }
+
+        if (VerifyExists("Server", false) && !(Server == strServerID))
+        {
+            OTAPI_Wrap::Output(0, "This account is on server ( " + strServerID + " -- the server is deduced based on the account), but the default server is ( " + Server + " ). To override it, use:  --server " + strServerID + " \n");
+            return -1;
+        }
+
+        string strToNymID = OTAPI_Wrap::GetAccountWallet_NymID(MyAcct);
+        if (!VerifyStringVal(strToNymID))
+        {
+            OTAPI_Wrap::Output(0, "\n\nFailure: Unable to find depositor NymID based on account ( " + MyAcct + " ).\nUse: --myacct ACCT_ID\n");
+            OTAPI_Wrap::Output(0, "OT will find the Nym based on the account.\n\n");
+            return -1;
+        }
+        
+        return OTAPI_WRAP::notarizeBailment(strServerID, MyAcct);
+    }
+
+    return -1;
+}
+
 OT_COMMANDS_OT int32_t OT_Command::main_balance()
 {
     if (VerifyExists("MyAcct"))

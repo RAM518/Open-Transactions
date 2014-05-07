@@ -105,6 +105,7 @@ public:
     EXPORT OT_COMMANDS_OT static int32_t main_add_server();
     EXPORT OT_COMMANDS_OT static int32_t main_add_signature();
     EXPORT OT_COMMANDS_OT static int32_t main_adjust_usage_credits();
+    EXPORT OT_COMMANDS_OT static int32_t main_bailment();
     EXPORT OT_COMMANDS_OT static int32_t main_balance();
     EXPORT OT_COMMANDS_OT static int32_t main_cancel_outgoing();
     EXPORT OT_COMMANDS_OT static int32_t main_change_passphrase();

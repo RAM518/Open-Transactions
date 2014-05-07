@@ -104,6 +104,7 @@ typedef enum
     QUERY_ASSET_TYPES = 31,
     GET_BOX_RECEIPT = 32,
     ADJUST_USAGE_CREDITS = 33,
+    BAILMENT = 34,
 } OTAPI_Func_Type;
 
 class the_lambda_struct

@@ -842,6 +842,15 @@ OT_MADE_EASY_OT string MadeEasy::deposit_cheque(const string & SERVER_ID, const 
     return strResponse;
 }
 
+OT_MADE_EASY_OT string inbailment(const string & SERVER_ID, const string & NYM_ID, const string & ACCT_ID)
+{
+    OTAPI_Func ot_Msg;
+
+    OTAPI_Func theRequest(BAILMENT, SERVER_ID, NYM_ID, ACCT_ID);
+    string strResponse = theRequest.SendTransaction(theRequest, "BAILMENT");// <========================;
+
+    return strResponse;
+}
 
 OT_MADE_EASY_OT string MadeEasy::get_market_list(const string & SERVER_ID, const string & NYM_ID)
 {

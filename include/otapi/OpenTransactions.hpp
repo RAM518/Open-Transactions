@@ -894,6 +894,10 @@ EXPORT	OTServerContract * LoadServerContract(const OTIdentifier & SERVER_ID);
                                 OTIdentifier	& ACCT_ID,
                                 OTString		& THE_PURSE);
 
+        EXPORT int32_t  notarizeBailment(OTIdentifier	& SERVER_ID,
+                            OTIdentifier	& USER_ID,
+                            OTIdentifier	& ACCT_ID);
+
 	EXPORT	int32_t notarizeTransfer(OTIdentifier	& SERVER_ID,
                                  OTIdentifier	& USER_ID,
                                  OTIdentifier	& ACCT_FROM,

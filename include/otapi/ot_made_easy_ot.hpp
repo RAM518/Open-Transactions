@@ -42,6 +42,7 @@ public:
     EXPORT OT_MADE_EASY_OT static string get_market_recent_trades(const string & SERVER_ID, const string & NYM_ID, const string & MARKET_ID);
     EXPORT OT_MADE_EASY_OT static string get_nym_market_offers(const string & SERVER_ID, const string & NYM_ID);
     EXPORT OT_MADE_EASY_OT static string get_payment_instrument(const string & SERVER_ID, const string & NYM_ID, const int32_t nIndex, const string & PRELOADED_INBOX); // PRELOADED_INBOX is optional.
+    EXPORT OT_MADE_EASY_OT static string inbailment(const string & SERVER_ID, const string & NYM_ID, const string & ACCT_ID);
     EXPORT OT_MADE_EASY_OT static bool importCashPurse(const string & serverID, const string & nymID, const string & assetID, string & userInput, const bool isPurse);
     EXPORT OT_MADE_EASY_OT static bool insure_enough_nums(const int32_t nNumberNeeded, const string & strMyServerID, const string & strMyNymID);
     EXPORT OT_MADE_EASY_OT static string issue_asset_type(const string & SERVER_ID, const string & NYM_ID, const string & THE_CONTRACT);

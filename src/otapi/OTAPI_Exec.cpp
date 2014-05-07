@@ -12973,6 +12973,26 @@ int32_t OTAPI_Exec::notarizeTransfer(const std::string & SERVER_ID,
 	return OTAPI()->notarizeTransfer(theServerID, theUserID, theFromAcct, theToAcct, static_cast<int64_t>(lAmount), strNote);
 }
 
+// Returns int32_t:
+// -1 means error; no message was sent.
+// -2 means the message was sent, but the request number must be passed as a string, so call OTAPI_Exec::GetLargeRequestNum.
+//  0 means NO error, but also: no message was sent.
+// >0 means NO error, and the message was sent, and the request number fits into an integer...
+//  ...and in fact the requestNum IS the return value!
+//  ===> In 99% of cases, this LAST option is what actually happens!!
+//
+int32_t OTAPI_Exec::notarizeBailment(const std::string & SERVER_ID,
+						  const std::string & USER_ID,
+						  const std::string & ACCT_ID)
+{
+	if (SERVER_ID.empty())			{ OTLog::vError("%s: Null: %s passed in!\n", __FUNCTION__, "SERVER_ID"			); OT_FAIL; }
+	if (USER_ID.empty())			{ OTLog::vError("%s: Null: %s passed in!\n", __FUNCTION__, "USER_ID"			); OT_FAIL; }
+	if (ACCT_ID.empty())			{ OTLog::vError("%s: Null: %s passed in!\n", __FUNCTION__, "ACCT_ID"			); OT_FAIL; }
+
+	OTIdentifier theServerID(SERVER_ID), theUserID(USER_ID), theAcctID(ACCT_ID);
+	return OTAPI()->notarizeBailment(theServerID, theUserID, theAcctID, strPurse);
+}
+
 
 // Returns int32_t:
 // -1 means error; no message was sent.

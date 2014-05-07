@@ -3,13 +3,13 @@
 * OTAPI.cpp   --	A C++ Low-Level API (wraps OT_API)
 *
 * This is a C++ class that contains many helper functions.
-*  
+*
 */
 
 /************************************************************
  -----BEGIN PGP SIGNED MESSAGE-----
  Hash: SHA1
- 
+
  *                 OPEN TRANSACTIONS
  *
  *       Financial Cryptography and Digital Cash
@@ -112,10 +112,10 @@
  *   warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
  *   PURPOSE.  See the GNU Affero General Public License for
  *   more details.
- 
+
  -----BEGIN PGP SIGNATURE-----
  Version: GnuPG v1.4.9 (Darwin)
- 
+
  iQIcBAEBAgAGBQJRSsfJAAoJEAMIAO35UbuOQT8P/RJbka8etf7wbxdHQNAY+2cC
  vDf8J3X8VI+pwMqv6wgTVy17venMZJa4I4ikXD/MRyWV1XbTG0mBXk/7AZk7Rexk
  KTvL/U1kWiez6+8XXLye+k2JNM6v7eej8xMrqEcO0ZArh/DsLoIn1y8p8qjBI7+m
@@ -229,7 +229,7 @@ OTAPI_Exec * OTAPI_Wrap::Exec()
 
 OTAPI_Exec * OTAPI_Wrap::It()
 {
-    return Exec(); 
+    return Exec();
 }
 
 bool OTAPI_Wrap::AppInit()
@@ -1779,6 +1779,11 @@ int32_t OTAPI_Wrap::notarizeWithdrawal(const std::string & SERVER_ID, const std:
 int32_t OTAPI_Wrap::notarizeDeposit(const std::string & SERVER_ID, const std::string & USER_ID, const std::string & ACCT_ID, const std::string & THE_PURSE)
 {
     return Exec()->notarizeDeposit(SERVER_ID, USER_ID, ACCT_ID, THE_PURSE);
+}
+
+int32_t notarizeBailment(const std::string & SERVER_ID, const std::string & USER_ID, const std::string & ACCT_ID)
+{
+        return Exec()->notarizeBailment(SERVER_ID, USER_ID, ACCT_ID);
 }
 
 int32_t OTAPI_Wrap::notarizeTransfer(const std::string & SERVER_ID, const std::string & USER_ID, const std::string & ACCT_FROM, const std::string & ACCT_TO, const int64_t & AMOUNT, const std::string & NOTE)
