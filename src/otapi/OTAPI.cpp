@@ -1781,7 +1781,7 @@ int32_t OTAPI_Wrap::notarizeDeposit(const std::string & SERVER_ID, const std::st
     return Exec()->notarizeDeposit(SERVER_ID, USER_ID, ACCT_ID, THE_PURSE);
 }
 
-int32_t notarizeBailment(const std::string & SERVER_ID, const std::string & USER_ID, const std::string & ACCT_ID)
+int32_t OTAPI_Wrap::notarizeBailment(const std::string & SERVER_ID, const std::string & USER_ID, const std::string & ACCT_ID)
 {
         return Exec()->notarizeBailment(SERVER_ID, USER_ID, ACCT_ID);
 }

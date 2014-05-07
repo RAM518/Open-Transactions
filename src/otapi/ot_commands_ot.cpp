@@ -5397,7 +5397,7 @@ OT_COMMANDS_OT int32_t OT_Command::details_account_balance(const string & strID)
 
 OT_COMMANDS_OT int32_t OT_Command::main_bailment()
 {
-    string strUsage1 = "\n\n  USAGE: bailment --myacct YOUR_ACCT_ID \n";
+    string strUsage = "\n\n  USAGE: bailment --myacct YOUR_ACCT_ID \n";
     OTAPI_Wrap::Output(0, strUsage);
 
 
@@ -5435,8 +5435,8 @@ OT_COMMANDS_OT int32_t OT_Command::main_bailment()
             OTAPI_Wrap::Output(0, "OT will find the Nym based on the account.\n\n");
             return -1;
         }
-        
-        return OTAPI_WRAP::notarizeBailment(strServerID, MyAcct);
+
+        return OTAPI_Wrap::notarizeBailment(strServerID, strToNymID, MyAcct);
     }
 
     return -1;

@@ -27,6 +27,7 @@ typedef enum
     catInstruments = 7,
     catBaskets = 8,
     catNyms = 9,
+    catBailments = 10,
 } Category;
 
 static string categoryName[] =
@@ -40,7 +41,8 @@ static string categoryName[] =
     "Dealing with other users",
     "Financial instruments",
     "Basket currencies",
-    "Pseudonyms"
+    "Pseudonyms",
+    "Cryptocurrency Deposit or Withdrawal (Bailments)",
 };
 
 
@@ -63,6 +65,7 @@ MapCategory map_categories[] =
     { "addserver", catWallet },
     { "addsignature", catAdmin },
     { "balance", catAccounts },
+    { "bailment", catBailments },
     { "buyvoucher", catInstruments },
     { "cancel", catInstruments },
     { "changepw", catWallet },
@@ -175,6 +178,7 @@ MapHelp map_help[] =
     { "addserver", "paste an existing server contract, import it into your wallet." },
     { "addsignature", "add a signature to a contract without releasing others." },
     { "balance", "display balance for a specific account." },
+    { "inbailment", "request a deposit address to make a cryptocurrency deposit into any account" },
     { "buyvoucher", "withdraw from myacct as a voucher (cashier's cheque.)" },
     { "cancel", "cancel a not-yet-cashed, outgoing instrument from outpayment box." },
     { "changepw", "change the master passphrase for the wallet." },
@@ -287,6 +291,7 @@ MapFunction map_functions[] =
     { "addserver", OT_Command::main_add_server },               // paste an existing server contract, import it into your wallet.
     { "addsignature", OT_Command::main_add_signature },         // add a signature to a contract without releasing others.
     { "balance", OT_Command::main_balance },                    // display balance for a specific account.
+    { "inbailment", OT_Command::main_bailment },                // request a cryptocurrency deposit address for a deposit into a specific account
     { "buyvoucher", OT_Command::main_withdraw_voucher },        // withdraw a voucher (cashier's cheque).
     { "cancel", OT_Command::main_cancel_outgoing },             // cancel a not-yet-cashed, outgoing instrument from outpayment box.
     { "changepw", OT_Command::main_change_passphrase },         // Change the master passphrase for the wallet.
@@ -425,6 +430,7 @@ int32_t OT_OPENTXS_OT interpret_command(const string & strInput)
         string strInstruments = "";
         string strBaskets = "";
         string strNyms = "";
+        string strBailments = "";
 
         OTAPI_Wrap::Output(0, "\nCommands: \n\n");
         for (int32_t i = 0; map_functions[i].command != ""; i++)
@@ -458,6 +464,7 @@ int32_t OT_OPENTXS_OT interpret_command(const string & strInput)
                     case catInstruments: strInstruments += line; break;
                     case catBaskets: strBaskets += line; break;
                     case catNyms: strNyms += line; break;
+                    case catBailments: strBailments += line; break;
                     }
                     break;
                 }
@@ -473,6 +480,7 @@ int32_t OT_OPENTXS_OT interpret_command(const string & strInput)
         OTAPI_Wrap::Output(0, "\n " + categoryName[catInstruments] + ": \\n" + strInstruments);
         OTAPI_Wrap::Output(0, "\n " + categoryName[catBaskets] + ": \\n" + strBaskets);
         OTAPI_Wrap::Output(0, "\n " + categoryName[catNyms] + ": \\n" + strNyms);
+        OTAPI_Wrap::Output(0, "\n " + categoryName[catBailments] + ": \\n" + strBailments);
         OTAPI_Wrap::Output(0, "\n");
 
         return 0; // "success" from UNIX command line perspective.;

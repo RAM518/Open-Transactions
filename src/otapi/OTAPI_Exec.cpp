@@ -12990,7 +12990,7 @@ int32_t OTAPI_Exec::notarizeBailment(const std::string & SERVER_ID,
 	if (ACCT_ID.empty())			{ OTLog::vError("%s: Null: %s passed in!\n", __FUNCTION__, "ACCT_ID"			); OT_FAIL; }
 
 	OTIdentifier theServerID(SERVER_ID), theUserID(USER_ID), theAcctID(ACCT_ID);
-	return OTAPI()->notarizeBailment(theServerID, theUserID, theAcctID, strPurse);
+	return OTAPI()->notarizeBailment(theServerID, theUserID, theAcctID);
 }
 
 
