@@ -5397,7 +5397,7 @@ OT_COMMANDS_OT int32_t OT_Command::details_account_balance(const string & strID)
 
 OT_COMMANDS_OT int32_t OT_Command::main_bailment()
 {
-    string strUsage = "\n\n  USAGE: bailment --myacct YOUR_ACCT_ID \n";
+    string strUsage = "\n\n  USAGE: inbailment --myacct YOUR_ACCT_ID \n";
     OTAPI_Wrap::Output(0, strUsage);
 
 

@@ -9835,7 +9835,129 @@ int32_t OT_API::notarizeBailment(OTIdentifier	& SERVER_ID,
                             OTIdentifier	& USER_ID,
                             OTIdentifier	& ACCT_ID)
 {
-    return (-1);
+    const char * szFuncName = "OT_API::notarizeBailment";
+    OTPseudonym * pNym = this->GetOrLoadPrivateNym(USER_ID, false, szFuncName); // These copiously log, and ASSERT.
+
+    if (NULL == pNym) return (-1);
+    // By this point, pNym is a good pointer, and is on the wallet. (No need to cleanup.)
+    OTServerContract *	pServer = this->GetServer(SERVER_ID, szFuncName); // This ASSERTs and logs already.
+
+    if (NULL == pServer) return (-1);
+    // By this point, pServer is a good pointer.  (No need to cleanup.)
+    OTAccount * pAccount = this->GetOrLoadAccount(*pNym, ACCT_ID, SERVER_ID, szFuncName);
+
+    if (NULL == pAccount) return (-1);
+    // By this point, pAccount is a good pointer, and is on the wallet. (No need to cleanup.)
+
+    OTIdentifier	CONTRACT_ID;
+    OTString		strContractID;
+    CONTRACT_ID = pAccount->GetAssetTypeID();
+    CONTRACT_ID.GetString(strContractID);
+
+    OTMessage theMessage;
+    int64_t lRequestNumber = 0;
+
+    OTString strServerID(SERVER_ID), strNymID(USER_ID), strAcctID(ACCT_ID);
+    const OTPseudonym * pServerNym = pServer->GetContractPublicNym();
+    const OTIdentifier SERVER_USER_ID(*pServerNym);
+    int64_t lStoredTransactionNumber=0;
+    bool bGotTransNum = false;
+
+    OTLedger * pInbox	= pAccount->LoadInbox(*pNym);
+    OTLedger * pOutbox	= pAccount->LoadOutbox(*pNym); // for the inbailment request, outbox is only used for balance agreement fn call
+    OTCleanup<OTLedger> theInboxAngel(pInbox);
+    OTCleanup<OTLedger> theOutboxAngel(pOutbox);
+
+    if (NULL == pInbox){
+        OTLog::vOutput(0, "%s: Error: Failed loading inbox!\n", __FUNCTION__);
+        return (-1);
+    }
+    if (NULL == pOutbox){
+        OTLog::vOutput(0, "%s: Error: Failed loading outbox!\n", __FUNCTION__);
+        return (-1);
+    }
+    bGotTransNum = pNym->GetNextTransactionNum(*pNym, strServerID, lStoredTransactionNumber);
+    if (!bGotTransNum){
+        OTLog::vOutput(0, "%s: Next Transaction Number Available: Suggest requesting the server for a new one.\n", __FUNCTION__);
+        return (-1);
+    }
+
+    if (NULL == pServerNym) OT_FAIL;
+
+    // -----------------------------------------
+    bool bSuccess = false;
+
+    // Create a transaction
+    OTTransaction * pTransaction = OTTransaction::GenerateTransaction (USER_ID, ACCT_ID, SERVER_ID,
+        OTTransaction::bailment, lStoredTransactionNumber);
+    // set up the transaction item (each transaction may have multiple items...)
+    OTItem * pItem	= OTItem::CreateItemFromTransaction(*pTransaction, OTItem::bailment);
+
+    // sign the item
+    pItem->SignContract(*pNym);
+    pItem->SaveContract();
+
+    // the Transaction "owns" the item now and will handle cleaning it up.
+    pTransaction->AddItem(*pItem); // the Transaction's destructor will cleanup the item. It "owns" it now.
+
+    // BALANCE AGREEMENT
+    // pBalanceItem is signed and saved within this call. No need to do that again.
+    OTItem * pBalanceItem = pInbox->GenerateBalanceStatement(pItem->GetAmount(), *pTransaction, *pNym, *pAccount, *pOutbox);
+    if (NULL != pBalanceItem) // will never be NULL. Will assert above before it gets here.
+            pTransaction->AddItem(*pBalanceItem); // Better not be NULL... message will fail... But better check anyway.
+
+    // sign the transaction
+    pTransaction->SignContract(*pNym);
+    pTransaction->SaveContract();
+
+    // set up the ledger
+    OTLedger theLedger(USER_ID, ACCT_ID, SERVER_ID);
+    theLedger.GenerateLedger(ACCT_ID, SERVER_ID, OTLedger::message); // bGenerateLedger defaults to false, which is correct.
+    theLedger.AddTransaction(*pTransaction); // now the ledger "owns" and will handle cleaning up the transaction.
+
+    // sign the ledger
+    theLedger.SignContract(*pNym);
+    theLedger.SaveContract();
+
+    // extract the ledger in ascii-armored form... encoding...
+    OTString		strLedger(theLedger);
+    OTASCIIArmor	ascLedger(strLedger);
+
+    // (0) Set up the REQUEST NUMBER and then INCREMENT IT
+    pNym->GetCurrentRequestNum(strServerID, lRequestNumber);
+    theMessage.m_strRequestNum.Format("%ld", lRequestNumber); // Always have to send this.
+    pNym->IncrementRequestNum(*pNym, strServerID); // since I used it for a server request, I have to increment it
+
+    // (1) Set up member variables
+    theMessage.m_strCommand			= "notarizeTransactions";
+    theMessage.m_strNymID			= strNymID;
+    theMessage.m_strServerID		= strServerID;
+    theMessage.SetAcknowledgments(*pNym); // Must be called AFTER theMessage.m_strServerID is already set. (It uses it.)
+    theMessage.m_strAcctID			= strAcctID;
+    theMessage.m_ascPayload			= ascLedger;
+
+    OTIdentifier NYMBOX_HASH;
+    const std::string str_server(strServerID.Get());
+    const bool bNymboxHash = pNym->GetNymboxHash(str_server, NYMBOX_HASH);
+    NYMBOX_HASH.GetString(theMessage.m_strNymboxHash);
+    if (!bNymboxHash)
+        OTLog::vError("Failed getting NymboxHash from Nym for server: %s\n",
+        str_server.c_str());
+
+    // (2) Sign the Message
+    theMessage.SignContract(*pNym);
+
+    // (3) Save the Message (with signatures and all, back to its internal member m_strRawFile.)
+    theMessage.SaveContract();
+
+    // (Send it)
+#if defined(OT_ZMQ_MODE)
+    m_pClient->SetFocusToServerAndNym(*pServer, *pNym, this->m_pTransportCallback);
+#endif
+    m_pClient->ProcessMessageOut(theMessage);
+
+    return m_pClient->CalcReturnVal(lRequestNumber);
+
 }
 
 

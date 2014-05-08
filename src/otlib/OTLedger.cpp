@@ -145,7 +145,7 @@
 
 #include "irrxml/irrXML.hpp"
 
-char const * const __TypeStrings[] = 
+char const * const __TypeStrings[] =
 {
 	"nymbox",           // the nymbox is per user account (versus per asset account) and is used to receive new transaction numbers (and messages.)
 	"inbox",            // each asset account has an inbox, with pending transfers as well as receipts inside.
@@ -1569,6 +1569,7 @@ OTItem * OTLedger::GenerateBalanceStatement(const int64_t lAdjustment, const OTT
 		case OTTransaction::processInbox:
 		case OTTransaction::withdrawal:
 		case OTTransaction::deposit:
+                case OTTransaction::bailment:
         case OTTransaction::cancelCronItem:
 		case OTTransaction::exchangeBasket:
 		case OTTransaction::payDividend:
