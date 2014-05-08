@@ -9811,7 +9811,6 @@ void OTServer::NotarizeTransaction(OTPseudonym & theNym, OTTransaction & tranIn,
 		else
 		{
 			OTItem::itemType theReplyItemType = OTItem::error_state;
-
 			switch (tranIn.GetType())
 			{
 					// TRANSFER (account to account)
@@ -9958,7 +9957,7 @@ void OTServer::NotarizeTransaction(OTPseudonym & theNym, OTTransaction & tranIn,
 					theReplyItemType = OTItem::atExchangeBasket;
 					break;
 
-                default:
+                                default:
 					OTLog::vError("%s: Error, unexpected type: %s\n", __FUNCTION__, tranIn.GetTypeString());
 					break;
 			}
@@ -10020,6 +10019,7 @@ void OTServer::NotarizeTransaction(OTPseudonym & theNym, OTTransaction & tranIn,
 				case OTTransaction::payDividend:
                 case OTTransaction::withdrawal:
 				case OTTransaction::deposit:
+                                case OTTransaction::bailment:
 				case OTTransaction::cancelCronItem:
 				case OTTransaction::exchangeBasket:
 					if (false == RemoveIssuedNumber(theNym, lTransactionNumber, true)) //bSave=true

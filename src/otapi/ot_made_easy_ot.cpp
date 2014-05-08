@@ -842,7 +842,7 @@ OT_MADE_EASY_OT string MadeEasy::deposit_cheque(const string & SERVER_ID, const 
     return strResponse;
 }
 
-OT_MADE_EASY_OT string inbailment(const string & SERVER_ID, const string & NYM_ID, const string & ACCT_ID)
+OT_MADE_EASY_OT string MadeEasy::inbailment(const string & SERVER_ID, const string & NYM_ID, const string & ACCT_ID)
 {
     OTAPI_Func ot_Msg;
 
