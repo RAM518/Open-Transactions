@@ -5060,33 +5060,30 @@ void OTServer::NotarizeBailment(OTPseudonym & theNym, OTAccount & theAccount,
 			{      // everything checks out, generate initiateBailment receipt message here
 				// Generate new transaction number for this new transaction
 				// todo check this generation for failure (can it fail?)
-				int64_t lNewTransactionNumber = 0;
-                                IssueNextTransactionNumber(m_nymServer, lNewTransactionNumber, false); // bStoreTheNumber = false
-                                OTTransaction * pInboxTransaction = OTTransaction::GenerateTransaction(*pInbox, OTTransaction::initiatedBailment,
-                                                                                               lNewTransactionNumber);
-				//todo put these two together in a method.
-				pInboxTransaction->SetReferenceString(strInReferenceTo);
-				pInboxTransaction->SetReferenceToNum(pItem->GetTransactionNum());
-				pInboxTransaction->SetNumberOfOrigin(*pItem);
-
-				// Now we have created a new transaction from the server to the users' inbox
-				// Let's sign and add it to their inbox
-				pInboxTransaction->SignContract(m_nymServer);
-				pInboxTransaction->SaveContract();
-
-				// balance agreement should be trivial, no change is needed to the balance right now
-                                // is this needed? (RAM)
 				if (!(pBalanceItem->VerifyBalanceStatement(0, // no change to balance
 														   theNym,
 														   *pInbox,
 														   *pOutbox,
 														   theAccount,
-														   tranIn,
-														   lNewTransactionNumber))) {
+														   tranIn))) {
 
-					OTLog::vOutput(0, "ERROR verifying balance statement while performing bailment request. Acct ID:\n%s\n",
+					OTLog::vOutput(0, "ERROR verifying balance statement while performing bailment request. Acct ID:%s\n",
 								   strAccountID.Get());
                                 } else {
+                                        int64_t lNewTransactionNumber = 0;
+                                        IssueNextTransactionNumber(m_nymServer, lNewTransactionNumber, false); // bStoreTheNumber = false
+                                        OTTransaction * pInboxTransaction = OTTransaction::GenerateTransaction(*pInbox, OTTransaction::initiatedBailment,
+                                                                                               lNewTransactionNumber);
+                                	//todo put these two together in a method.
+                                        pInboxTransaction->SetReferenceString(strInReferenceTo);
+                                        pInboxTransaction->SetReferenceToNum(pItem->GetTransactionNum());
+                                        pInboxTransaction->SetNumberOfOrigin(*pItem);
+
+                                        // Now we have created a new transaction from the server to the users' inbox
+                                        // Let's sign and add it to their inbox
+                                        pInboxTransaction->SignContract(m_nymServer);
+                                        pInboxTransaction->SaveContract();
+
                                         pResponseBalanceItem->SetStatus(OTItem::acknowledgement); // the balance agreement (just above) was successful.
                                         pResponseBalanceItem->SetNewOutboxTransNum(lNewTransactionNumber); // So the receipt will show that the client's "1" in the outbox is now actually "34" or whatever, issued by the server as part of successfully processing the transaction.
                                         // Here the transaction we just created is actually added to the source acct's inbox.

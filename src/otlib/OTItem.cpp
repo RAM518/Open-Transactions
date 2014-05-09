@@ -754,6 +754,8 @@ bool OTItem::VerifyBalanceStatement(const int64_t lActualAdjustment,
 	this->GetAttachment(strMessageNym);
 	OTPseudonym theMessageNym;
 
+        OTLog::vOutput(0, "theMessageNym : %lld\n",strMessageNym.GetLength());
+
 	if ((strMessageNym.GetLength() > 2) && theMessageNym.LoadFromString(strMessageNym))
 	{
 		FOR_EACH(mapOfTransNums, theMessageNym.GetMapIssuedNum())
@@ -802,6 +804,7 @@ bool OTItem::VerifyBalanceStatement(const int64_t lActualAdjustment,
 
 							case OTTransaction::transfer:
 							case OTTransaction::marketOffer:
+                                                        case OTTransaction::bailment:
 							case OTTransaction::paymentPlan:
 							case OTTransaction::smartContract:
 								break;
@@ -902,6 +905,7 @@ bool OTItem::VerifyBalanceStatement(const int64_t lActualAdjustment,
 			break;
 
 		case OTTransaction::transfer:
+		case OTTransaction::bailment:
 		case OTTransaction::marketOffer:
 		case OTTransaction::paymentPlan:
 		case OTTransaction::smartContract:
