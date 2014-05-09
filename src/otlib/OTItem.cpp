@@ -589,6 +589,13 @@ bool OTItem::VerifyBalanceStatement(const int64_t lActualAdjustment,
 						   __FUNCTION__, pszLedgerType, pSubItem->GetTransactionNum());
 			return false;
 		}
+		if ((pSubItem->GetType()		== OTItem::bailment) &&
+			(pTransaction->GetType()	!= OTTransaction::bailment))
+		{
+			OTLog::vOutput(0, "OTItem::%s: %s transaction (%lld) wrong type. (bailment block)\n",
+						   __FUNCTION__, pszLedgerType, pSubItem->GetTransactionNum());
+			return false;
+		}
 
         if ((pSubItem->GetType()		== OTItem::basketReceipt) &&
             // ------------------------------------------------------------
@@ -702,6 +709,7 @@ bool OTItem::VerifyBalanceStatement(const int64_t lActualAdjustment,
             break;
 
 		case OTTransaction::transfer:
+                case OTTransaction::bailment:
 		case OTTransaction::marketOffer:
 		case OTTransaction::paymentPlan:
 		case OTTransaction::smartContract:

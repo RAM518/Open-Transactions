@@ -5027,7 +5027,7 @@ void OTServer::NotarizeBailment(OTPseudonym & theNym, OTAccount & theAccount,
 			// Okay then, everything checks out. Let's add this to the recipient's inbox.
 			// IF it can be loaded up from file, or generated, that is.
 			// Load the inbox in case it already exists
-			OTLedger theToInbox(pItem->GetDestinationAcctID(), SERVER_ID), theToOutbox(USER_ID, pItem->GetDestinationAcctID(), SERVER_ID);
+			OTLedger theToInbox(ACCOUNT_ID, SERVER_ID), theToOutbox(USER_ID,ACCOUNT_ID,SERVER_ID);
 			bool bSuccessLoadingInbox = theToInbox.LoadInbox();
 			bool bSuccessLoadingOutbox = theToOutbox.LoadOutbox();
 			if (true == bSuccessLoadingInbox)
