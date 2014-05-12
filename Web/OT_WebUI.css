@@ -1,0 +1,113 @@
+html {
+        height: 100%;
+}
+
+body {
+        margin: 0;
+        padding: 0;
+        background: #DCEDFD center center no-repeat;
+        color: #ffffff;
+        font-family: sans-serif;
+        font-size: 13px;
+        line-height: 20px;
+        height: 100%;
+}
+
+OTimg {
+        position: relative;    
+	margin: 0px 0px;
+        display: inline-table;        
+}
+
+nav {
+	margin: 20px auto; 
+	text-align: center;
+}
+
+nav ul ul {
+	display: none;
+}
+
+nav ul li:hover > ul {
+	display: block;
+}
+
+
+nav ul {
+	background: #DBFFFF; 
+	background: linear-gradient(top, #DBFFFF 0%, #8EABDA 100%);  
+	background: -moz-linear-gradient(top, #DBFFFF 0%, #8EABDA 100%); 
+	background: -webkit-linear-gradient(top, #DBFFFF 0%, #8EABDA 100%); 
+	box-shadow: 0px 0px 9px rgba(0,0,0,0.15);
+	padding: 0 5px;
+	border-radius: 10px;  
+	list-style: none;
+	position: relative;
+	display: inline-table;
+        border: 0px;
+}
+
+nav ul ln {
+    position: relative;
+    top: -48px;
+    height: 1px; // CSS trick to float the OT banner image
+    
+}
+
+nav ul:after {
+	content: ""; clear: both; display: block;
+}
+
+nav ul li {
+	float: left;
+        border-radius: 10px;        
+}
+
+nav ul li:hover {
+//	background: #4b545f;
+	background: linear-gradient(top, #4f5964 0%, #5f6975 40%);
+	background: -moz-linear-gradient(top, #4f5964 0%, #5f6975 40%);
+	background: -webkit-linear-gradient(top, #4f5964 0%,#5f6975 40%);
+        border-radius: 10px;        
+}
+
+nav ul li:hover a {
+	color: #fff;
+}
+		
+nav ul li a {
+	display: block; padding: 25px 50px;
+	color: #757575; text-decoration: none;
+}
+			
+nav ul ul {
+        background: #5f6975; border-radius: 10px; padding: 0;
+	position: absolute; top: 100%;
+}
+
+nav ul ul li {
+	float: none; 
+	border-top: 1px solid #6b727c;
+	bottom: 1px solid #575f6a; position: relative;
+        border-radius: 10px;        
+}
+
+nav ul ul li a {
+	padding: 8px 40px;
+	color: #fff;
+}
+
+nav ul ul li a:hover {
+	background: #4b545f;
+        border-radius: 10px;        
+}
+		
+nav ul ul ul {
+	position: absolute; left: 100%; top:0;
+        border-radius: 10px;        
+}     
+
+
+
+
+
