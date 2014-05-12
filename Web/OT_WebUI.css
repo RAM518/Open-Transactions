@@ -36,9 +36,7 @@ nav ul li:hover > ul {
         z-index: 10;        
 }
 
-
 nav ul {
-	background: #DBFFFF; 
 	background: linear-gradient(top, #DBFFFF 0%, #8EABDA 100%);  
 	background: -moz-linear-gradient(top, #DBFFFF 0%, #8EABDA 100%); 
 	background: -webkit-linear-gradient(top, #DBFFFF 0%, #8EABDA 100%); 
@@ -174,7 +172,6 @@ nav ul ul ul {
 }     
 
 main {
-        align: center;
 	text-align: center;
         width: 800px;
         height: 500px;
@@ -190,7 +187,8 @@ nest {
 //        margin: 35px auto; 
 	text-align: center;
         width: 780px;
-        z-index: 1;        
+        z-index: 1;
+        align: left;
 }
 
 nest ul {
@@ -198,7 +196,7 @@ nest ul {
 	background: linear-gradient(top, #8EABDA 0%, #648BCC 100%);  
 	background: -moz-linear-gradient(top, #8EABDA 0%, #648BCC 100%); 
 	background: -webkit-linear-gradient(top, #8EABDA 0%, #648BCC 100%); 
-	padding: 0px 8px;
+	padding: 3px 8px;
 	border-radius: 10px;  
 	list-style: none;
 	position: relative;
@@ -221,4 +219,43 @@ h2 {
 h3 {
     color: #E5F2FE; 
 }
+
+h4 {
+    color: #E5F2FE; 
+}
+
+select {
+    border-radius: 5px;
+    background: #DBFFFF;
+    color: #163FA1;    
+}
+
+select option {
+    border-radius: 5px;
+    background: #DBFFFF;
+    color: #163FA1;    
+}
+
+.file-input-wrapper {
+//    width: 200px;
+//    height: 40px;
+    overflow: hidden;
+    position: relative;
+}
+
+.file-input-wrapper > input[type="file"] {
+//    font-size: 200px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0;
+}
+
+.file-input-wrapper > .btn-file-input {
+    display: inline-block;
+//    width: 200px;
+//    height: 40px;
+}
+
+
 

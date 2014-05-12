@@ -135,6 +135,17 @@
         <link rel=stylesheet type="text/css" href="OT_WebUI.css">
         <!-- <script src="LiveNetworkGraph_OT.js"></script> -->
 
+        <script language="javascript">
+
+            function keyUpdate(){ // a little javascript helper for the keyfile selector button styling
+                var x = document.getElementById("KeyName");
+                var y = document.getElementById("KeyValue");
+                x.innerHTML = y.value;
+            }
+
+        </script>
+
+
     </head>
     <body>
 
@@ -172,13 +183,57 @@
                 </li>
             </ul>
         </nav>
-        <main>
-
-
-
-
-
-
+        <main style="margin: -32px auto;">
+            <nest>
+                <ul style="width:780px; margin-top: 15px;">
+                    <li><h1>OT <u>Transaction Server</u> Web Panel</h1></li>
+                </ul>
+                <table border=0px><tr valign=top><td style="width:250px;">
+                    <ul style="width:250px; margin: 2px 0px; padding: 0px 0px; text-align: left;">
+                        <li>
+                            <font style="font-size: 14px; color: #E5F2FE;">&nbsp;&nbsp;<b>Transaction Server List</b></font><br />
+                                <div style="width: 100%; margin: 0px auto; text-align: center;">
+                                    <select>
+                                        <option value="127.0.0.1">127.0.0.1</option>
+                                        <option value="example_ip_addr">Monetas Cloud Server</option>
+                                        <option value="example_ip_addr">Example Tx Server Name</option>
+                                        <option value="example_ip_addr">Example Tx Server IP</option>
+                                    </select>
+                                </div>
+                                <div style="width: 100%; margin: 5px auto; text-align: left;">
+                                    <div class="file-input-wrapper">
+                                        <button class="btn-file-input" onClick="keyShow();">Select Keyfile</button><input type="file" id="KeyValue" onchange="javascript:keyUpdate();">
+                                        <br /><font style="font-size: 13px; color: #163FA1;"><b>&nbsp;<span id="KeyName"> select file <span></b></font>
+                                    </div>
+                                </div>
+                                <div style="width: 100%; margin: 0px auto; text-align: center;">
+                                    <button type="button" onclick="alert('Hello world!')">Secure Log-In</button>
+                                </div>
+                        </li>
+                    </ul>
+                 </td><td style="width:250px;">
+                    <ul style="width:250px; margin: 2px 0px; padding: 0px 0px;">
+                        <li>
+                            <font style="font-size: 14px; color: #E5F2FE;"><b>Tx Server Info & Stats</b></font><br /></font>
+                                <div style="width: 100%; margin: 0px auto; text-align: left;">
+                                    &nbsp;&nbsp;&nbsp; - IP Address: <font style="font-size: 13px; color: #163FA1;"><span id="TxIPAddr">127.0.0.1</span></font><br />
+                                    &nbsp;&nbsp;&nbsp; - Server Name: <font style="font-size: 13px; color: #163FA1;"><span id="TxServerName">localhost</span></font><br />
+                                    &nbsp;&nbsp;&nbsp; - Git Code Version: <font style="font-size: 13px; color: #163FA1;"><span id="TxGitVersion">0.92c</span></font><br />
+                                    &nbsp;&nbsp;&nbsp; - Total Registered Nyms: <font style="font-size: 13px; color: #163FA1;"><span id="TxRegisteredNyms">216</span></font><br />
+                                    &nbsp;&nbsp;&nbsp; - Total Asset Contracts: <font style="font-size: 13px; color: #163FA1;"><span id="TxAssetContracts">26</span></font><br />
+                                    &nbsp;&nbsp;&nbsp; - TX Server Contract: <font style="font-size: 13px; color: #163FA1;"><span id="TxServerContractID">(id or test)</span></font><br />
+                                </div>
+                        </li>
+                    </ul>
+                </td><td style="width:250px;">
+                    <ul style="width:250px; margin: 2px 0px; padding: 0px 0px;">
+                        <li>
+                            <font style="font-size: 14px; color: #E5F2FE;"><b>Tx Server Network Graph</b></font><br /></font>
+                            <img src="./images/mesh.png" height="250px">
+                        </li>
+                    </ul>
+                </td></tr></table>
+            <nest>
         </main>
 
     </body>
