@@ -695,11 +695,12 @@ bool OTItem::VerifyBalanceStatement(const int64_t lActualAdjustment,
 	switch (TARGET_TRANSACTION.GetType())
 	{
 		case OTTransaction::processInbox:
-        case OTTransaction::withdrawal:
+                case OTTransaction::withdrawal:
 		case OTTransaction::deposit:
+                case OTTransaction::bailment:
 		case OTTransaction::payDividend:
-        case OTTransaction::cancelCronItem:
-        case OTTransaction::exchangeBasket:
+                case OTTransaction::cancelCronItem:
+                case OTTransaction::exchangeBasket:
             // We DID verify the issued num (above) but I'm still just being safe here...
             // ... since theRemovedNym contains numbers being re-added, just wanna make sure
             // they were there in the first place.
@@ -709,7 +710,6 @@ bool OTItem::VerifyBalanceStatement(const int64_t lActualAdjustment,
             break;
 
 		case OTTransaction::transfer:
-                case OTTransaction::bailment:
 		case OTTransaction::marketOffer:
 		case OTTransaction::paymentPlan:
 		case OTTransaction::smartContract:
@@ -753,8 +753,7 @@ bool OTItem::VerifyBalanceStatement(const int64_t lActualAdjustment,
 	// number is checked.
 	this->GetAttachment(strMessageNym);
 	OTPseudonym theMessageNym;
-
-        OTLog::vOutput(0, "theMessageNym : %lld\n",strMessageNym.GetLength());
+//        OTLog::sError(strMessageNym);
 
 	if ((strMessageNym.GetLength() > 2) && theMessageNym.LoadFromString(strMessageNym))
 	{
@@ -784,11 +783,12 @@ bool OTItem::VerifyBalanceStatement(const int64_t lActualAdjustment,
 						switch (TARGET_TRANSACTION.GetType())
 						{
 							case OTTransaction::processInbox:
-                            case OTTransaction::withdrawal:
+                                                        case OTTransaction::withdrawal:
 							case OTTransaction::deposit:
+                                                        case OTTransaction::bailment:
 							case OTTransaction::payDividend:
-                            case OTTransaction::cancelCronItem:
-                            case OTTransaction::exchangeBasket:
+                                                        case OTTransaction::cancelCronItem:
+                                                        case OTTransaction::exchangeBasket:
                                 // Should only actually iterate once, in this case.
                                 for (int32_t i = 0; i < theRemovedNym.GetIssuedNumCount(GetPurportedServerID()); i++)
                                 {
@@ -804,7 +804,6 @@ bool OTItem::VerifyBalanceStatement(const int64_t lActualAdjustment,
 
 							case OTTransaction::transfer:
 							case OTTransaction::marketOffer:
-                                                        case OTTransaction::bailment:
 							case OTTransaction::paymentPlan:
 							case OTTransaction::smartContract:
 								break;
@@ -833,11 +832,12 @@ bool OTItem::VerifyBalanceStatement(const int64_t lActualAdjustment,
 		switch (TARGET_TRANSACTION.GetType())
 		{
 			case OTTransaction::processInbox:
-            case OTTransaction::withdrawal:
+                        case OTTransaction::withdrawal:
 			case OTTransaction::deposit:
+                        case OTTransaction::bailment:
 			case OTTransaction::payDividend:
-            case OTTransaction::cancelCronItem:
-            case OTTransaction::exchangeBasket:
+                        case OTTransaction::cancelCronItem:
+                        case OTTransaction::exchangeBasket:
                 // Should only actually iterate once, in this case.
                 for (int32_t i = 0; i < theRemovedNym.GetIssuedNumCount(GetPurportedServerID()); i++)
                 {
@@ -886,11 +886,12 @@ bool OTItem::VerifyBalanceStatement(const int64_t lActualAdjustment,
 	switch (TARGET_TRANSACTION.GetType())
 	{
 		case OTTransaction::processInbox:
-        case OTTransaction::withdrawal:
+                case OTTransaction::withdrawal:
 		case OTTransaction::deposit:
+		case OTTransaction::bailment:
 		case OTTransaction::payDividend:
-        case OTTransaction::cancelCronItem:
-        case OTTransaction::exchangeBasket:
+                case OTTransaction::cancelCronItem:
+                case OTTransaction::exchangeBasket:
             // Should only actually iterate once, in this case.
             for (int32_t i = 0; i < theRemovedNym.GetIssuedNumCount(GetPurportedServerID()); i++)
             {
@@ -905,7 +906,6 @@ bool OTItem::VerifyBalanceStatement(const int64_t lActualAdjustment,
 			break;
 
 		case OTTransaction::transfer:
-		case OTTransaction::bailment:
 		case OTTransaction::marketOffer:
 		case OTTransaction::paymentPlan:
 		case OTTransaction::smartContract:

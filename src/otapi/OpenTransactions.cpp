@@ -6615,7 +6615,7 @@ bool OT_API::ClearExpired(const OTIdentifier & SERVER_ID,
     {
         const int32_t nTemp = static_cast<int32_t>(nIndex);
         OTLog::vOutput(0, "%s: Failed trying to clear an expired record from the expired box at index: %d\n",
-                       __FUNCTION__, nTemp);        
+                       __FUNCTION__, nTemp);
     }
     // -----------------------------------------
     return false;
@@ -7677,7 +7677,7 @@ bool OT_API::ClearRecord(const OTIdentifier & SERVER_ID,
     {
         const int32_t nTemp = static_cast<int32_t>(nIndex);
         OTLog::vOutput(0, "%s: Failed trying to clear a record from the record box at index: %d\n",
-                       __FUNCTION__, nTemp);        
+                       __FUNCTION__, nTemp);
     }
     // -----------------------------------------
     return false;
@@ -8759,8 +8759,8 @@ int32_t OT_API::getTransactionNumber(OTIdentifier & SERVER_ID,
 	int32_t nReturnValue = m_pClient->ProcessUserCommand(OTClient::getTransactionNum, theMessage,
                                                      *pNym, *pServer,
                                                      NULL); // NULL pAccount on this command.
-	if (0 < nReturnValue) 
-	{				
+	if (0 < nReturnValue)
+	{
 		m_pClient->SetFocusToServerAndNym(*pServer, *pNym, this->m_pTransportCallback);
 		m_pClient->ProcessMessageOut(theMessage);
 
@@ -9241,7 +9241,7 @@ int32_t OT_API::notarizeDeposit(OTIdentifier	& SERVER_ID,
 
         // (Send it)
         m_pClient->SetFocusToServerAndNym(*pServer, *pNym, this->m_pTransportCallback);
-        m_pClient->ProcessMessageOut(theMessage);	
+        m_pClient->ProcessMessageOut(theMessage);
 
         return m_pClient->CalcReturnVal(lRequestNumber);
 
@@ -9315,12 +9315,12 @@ int32_t OT_API::notarizeBailment(OTIdentifier	& SERVER_ID,
     bool bSuccess = false;
 
     // Create a transaction
-    OTTransaction * pTransaction = OTTransaction::GenerateTransaction (USER_ID, ACCT_ID, SERVER_ID,
-        OTTransaction::bailment, lStoredTransactionNumber);
+    OTLog::vOutput(0, "notarizeBailment: creating bailment tx with TX number: %ld\n", lStoredTransactionNumber);
+    OTTransaction * pTransaction = OTTransaction::GenerateTransaction(USER_ID, ACCT_ID, SERVER_ID, OTTransaction::bailment, lStoredTransactionNumber);
     // set up the transaction item (each transaction may have multiple items...)
-    OTItem * pItem	= OTItem::CreateItemFromTransaction(*pTransaction, OTItem::bailment);
+    OTItem * pItem = OTItem::CreateItemFromTransaction(*pTransaction, OTItem::bailment);
 
-    // sign the item
+    // sign the bailment item
     pItem->SignContract(*pNym);
     pItem->SaveContract();
 
@@ -9333,7 +9333,7 @@ int32_t OT_API::notarizeBailment(OTIdentifier	& SERVER_ID,
     if (NULL != pBalanceItem) // will never be NULL. Will assert above before it gets here.
             pTransaction->AddItem(*pBalanceItem); // Better not be NULL... message will fail... But better check anyway.
 
-    // sign the transaction
+    // sign the transaction with the bailment and balance statement items
     pTransaction->SignContract(*pNym);
     pTransaction->SaveContract();
 
@@ -9628,7 +9628,7 @@ int32_t OT_API::payDividend(OTIdentifier	& SERVER_ID,
 			theMessage.SaveContract();
 
 			// (Send it)
-			m_pClient->SetFocusToServerAndNym(*pServer, *pNym, this->m_pTransportCallback);	
+			m_pClient->SetFocusToServerAndNym(*pServer, *pNym, this->m_pTransportCallback);
 			m_pClient->ProcessMessageOut(theMessage);
 
             return m_pClient->CalcReturnVal(lRequestNumber);
@@ -10347,7 +10347,7 @@ int32_t OT_API::depositPaymentPlan(const OTIdentifier & SERVER_ID,
 
 		// (Send it)
 		m_pClient->SetFocusToServerAndNym(*pServer, *pNym, this->m_pTransportCallback);
-		m_pClient->ProcessMessageOut(theMessage);	
+		m_pClient->ProcessMessageOut(theMessage);
 
         return m_pClient->CalcReturnVal(lRequestNumber);
 	} // thePlan.LoadContractFromString()
@@ -11848,7 +11848,7 @@ int32_t OT_API::processNymbox(OTIdentifier	& SERVER_ID,
         // (Otherwise 0 means Nymbox was empty, and -1 means there was an error.)
         //
         nRequestNum = atoi(theMessage.m_strRequestNum.Get());
-        
+
 		m_pClient->SetFocusToServerAndNym(*pServer, *pNym, this->m_pTransportCallback);
 		m_pClient->ProcessMessageOut(theMessage);
 
@@ -12587,8 +12587,8 @@ int32_t OT_API::getRequest(OTIdentifier	& SERVER_ID,
     int32_t nReturnValue = m_pClient->ProcessUserCommand(OTClient::getRequest, theMessage,
                                                      *pNym, *pServer,
                                                      NULL); // NULL pAccount on this command.
-	if (0 < nReturnValue) 
-	{				
+	if (0 < nReturnValue)
+	{
 		m_pClient->SetFocusToServerAndNym(*pServer, *pNym, this->m_pTransportCallback);
 		m_pClient->ProcessMessageOut(theMessage);
 
@@ -13026,7 +13026,7 @@ int32_t OT_API::createUserAccount(OTIdentifier	& SERVER_ID,
                                                      *pNym, *pServer,
                                                      NULL); // NULL pAccount on this command.
 	if (0 < nReturnValue)
-	{				
+	{
 		m_pClient->SetFocusToServerAndNym(*pServer, *pNym, this->m_pTransportCallback);
 		m_pClient->ProcessMessageOut(theMessage);
 
@@ -13059,8 +13059,8 @@ int32_t OT_API::deleteUserAccount(OTIdentifier	& SERVER_ID,
     int32_t nReturnValue = m_pClient->ProcessUserCommand(OTClient::deleteUserAccount, theMessage,
                                                      *pNym, *pServer,
                                                      NULL); // NULL pAccount on this command.
-	if (0 < nReturnValue) 
-	{				
+	if (0 < nReturnValue)
+	{
 		m_pClient->SetFocusToServerAndNym(*pServer, *pNym, this->m_pTransportCallback);
 		m_pClient->ProcessMessageOut(theMessage);
 
@@ -13093,8 +13093,8 @@ int32_t OT_API::checkServerID(OTIdentifier	& SERVER_ID,
     int32_t nReturnValue = m_pClient->ProcessUserCommand(OTClient::checkServerID, theMessage,
                                                      *pNym, *pServer,
                                                      NULL); // NULL pAccount on this command.
-	if (0 < nReturnValue) 
-	{				
+	if (0 < nReturnValue)
+	{
 		m_pClient->SetFocusToServerAndNym(*pServer, *pNym, this->m_pTransportCallback);
 		m_pClient->ProcessMessageOut(theMessage);
 

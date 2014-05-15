@@ -352,7 +352,7 @@ bool OTTransaction::VerifyAccount(OTPseudonym & theNym)
 
  */
 
-//    
+//
 // Only do this if the message itself failed, meaning this transaction never even
 // attempted, and thus this transaction NEVER EVEN HAD A *CHANCE* TO FAIL, and thus
 // the opening number never got burned (Normally no point in harvesting a burned
@@ -3291,7 +3291,7 @@ bool OTTransaction::VerifyBoxReceiptExists(const OTIdentifier & SERVER_ID,
 
 	return bExists;
 }
-// --------------------------------------------------------------------	
+// --------------------------------------------------------------------
 
 
 bool OTTransaction::VerifyBoxReceipt(OTTransaction & theFullVersion)
@@ -3399,7 +3399,7 @@ bool				m_bIsAbbreviated;
 int64_t				m_lAbbrevAmount;
 int64_t				m_lDisplayAmount;
 OTIdentifier		m_Hash;			// todo: make this const and force it to be set during construction.
-time64_t				m_DATE_SIGNED;	// The date, in seconds, when the instrument was last signed.	
+time64_t				m_DATE_SIGNED;	// The date, in seconds, when the instrument was last signed.
 transactionType		m_Type;			// blank, pending, processInbox, transfer, deposit, withdrawal, trade, etc.
 */
 
@@ -3505,7 +3505,7 @@ OTTransaction::OTTransaction(const OTIdentifier	& theUserID,
 							 const int64_t			& lTransactionNum,
 							 const int64_t			& lInRefTo,
 							 const int64_t			& lInRefDisplay,
-							 const time64_t		the_DATE_SIGNED, 
+							 const time64_t		the_DATE_SIGNED,
 							 const transactionType theType,
 							 const OTString		& strHash,
 							 const int64_t			& lAdjustment,
@@ -4338,7 +4338,7 @@ int32_t OTTransaction::LoadAbbreviatedRecord(irr::io::IrrXMLReader*& xml,
  int64_t				m_lDisplayAmount; // a $50 receipt, is +50 adjustment in the outbox, and -50 adjustment in the inbox, but 50 in the display.
  int64_t				m_lInRefDisplay;  // The "In Ref For Display" value
  OTIdentifier		m_Hash;			// todo: make this const and force it to be set during construction.
- time64_t				m_DATE_SIGNED;	// The date, in seconds, when the instrument was last signed.	
+ time64_t				m_DATE_SIGNED;	// The date, in seconds, when the instrument was last signed.
  transactionType	m_Type;			// blank, pending, processInbox, transfer, deposit, withdrawal, trade, payDividend, etc.
  int64_t				m_lClosingTransactionNo;	// used by finalReceipt
  */
@@ -5576,6 +5576,7 @@ void OTTransaction::SaveAbbreviatedInboxRecord(OTString & strOutput)
             // But the DISPLAY amount is the amount I originally sent. (Already multiplied by -1 by GetReceiptAmount())
             //
         case OTTransaction::pending:			// (The pending amount is stored on the transfer item in my list of transaction items.)
+        case OTTransaction::initiatedBailment:
         case OTTransaction::transferReceipt:	// The transferReceipt and voucherReceipt amounts are the display value (according to
         case OTTransaction::voucherReceipt:     // GetReceiptAmount()), and not the actual value of 0.
             if (IsAbbreviated())

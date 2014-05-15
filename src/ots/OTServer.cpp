@@ -5070,6 +5070,8 @@ void OTServer::NotarizeBailment(OTPseudonym & theNym, OTAccount & theAccount,
 					OTLog::vOutput(0, "ERROR verifying balance statement while performing bailment request. Acct ID:%s\n",
 								   strAccountID.Get());
                                 } else {
+//					OTLog::vOutput(0, "SUCCESS verifying balance statement while performing bailment request. Acct ID:%s\n",
+//								   strAccountID.Get());
                                         int64_t lNewTransactionNumber = 0;
                                         IssueNextTransactionNumber(m_nymServer, lNewTransactionNumber, false); // bStoreTheNumber = false
                                         OTTransaction * pInboxTransaction = OTTransaction::GenerateTransaction(*pInbox, OTTransaction::initiatedBailment,

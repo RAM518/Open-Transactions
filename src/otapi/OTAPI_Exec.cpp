@@ -8970,6 +8970,7 @@ std::string OTAPI_Exec::Transaction_CreateResponse(const std::string & SERVER_ID
 
 	if (
             (OTTransaction::pending         != pTransaction->GetType())
+		&&	(OTTransaction::initiatedBailment   != pTransaction->GetType())
 		&&	(OTTransaction::chequeReceipt   != pTransaction->GetType())
 		&&	(OTTransaction::voucherReceipt  != pTransaction->GetType())
 		&&	(OTTransaction::transferReceipt != pTransaction->GetType())
@@ -9047,8 +9048,8 @@ std::string OTAPI_Exec::Transaction_CreateResponse(const std::string & SERVER_ID
 		theRejectItemType = OTItem::disputeCronReceipt;
 		break;
 
-    case OTTransaction::chequeReceipt:
-    case OTTransaction::voucherReceipt:
+        case OTTransaction::chequeReceipt:
+        case OTTransaction::voucherReceipt:
 	case OTTransaction::transferReceipt:
 		theAcceptItemType = OTItem::acceptItemReceipt;
 		theRejectItemType = OTItem::disputeItemReceipt;
