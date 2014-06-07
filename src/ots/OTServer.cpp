@@ -157,6 +157,8 @@
 #include <OTMarket.hpp>
 #include <OTKeyring.hpp>
 
+#include <BitMessage.h>
+
 #include <fstream>
 
 
@@ -9843,6 +9845,16 @@ void OTServer::NotarizeTransaction(OTPseudonym & theNym, OTTransaction & tranIn,
 	// PGP-compatible format. It's not enough to sign it, you must also save it into
 	// that Raw file member variable (using SaveContract) and then you must sometimes
 	// THEN save it into a file (or a string or wherever you want to put it.)
+
+        // Now we broadcast the transaction we just processed to a Voting Pool Bitmessage stream
+        // Testing only at this point
+
+        // lets try a test send to bitmessage now.
+        std::shared_ptr<NetworkModule> m_netmodule;
+        std::string commstring("127.0.0.1,8442,RAMuser123,RAMpass123");
+        BitMessage *thisMessage = new BitMessage(commstring);
+        m_netmodule = std::shared_ptr<BitMessage>(thisMessage);
+
 }
 
 

@@ -134,6 +134,7 @@
 #include <OTPaths.hpp>
 #include <OTCrypto.hpp>
 #include <OTMint.hpp>
+#include <BitMessage.h>
 
 
 // TODO: what about android for all the defaults here? Are there ini files in android? Revisit.

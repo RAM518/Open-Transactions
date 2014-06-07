@@ -289,10 +289,6 @@ const OTString OTLog::m_strPathSeparator = "/";
 //  OTLog Init, must run this befor useing any OTLog function.
 //
 
-
-
-
-
 //static
 bool OTLog::Init(const OTString & strThreadContext, const int32_t & nLogLevel)
 {

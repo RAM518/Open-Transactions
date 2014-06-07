@@ -9,8 +9,9 @@ opentxs_source_dir      =	$(top_srcdir)/src
 common_includes         =	$(AM_CXXFLAGS)			\
 				-I$(top_builddir)/include/otlib	\
 				-I$(opentxs_include_dir)	\
-				-I$(opentxs_include_dir)/otlib
-
+				-I$(opentxs_include_dir)/otlib  \
+				-I/home/locutus/installs/libbmwrapper_m/src
+ 
 ## Open Transactions Bin Build  ##
 
 bin_PROGRAMS            =   ot otserver createmint
@@ -19,7 +20,7 @@ bin_PROGRAMS            =   ot otserver createmint
 
 ot_SOURCES              =  $(ot_sources) $(otapi_headers)
 
-ot_CXXFLAGS             =  $(common_includes) -I$(otapi_headers_dir)
+ot_CXXFLAGS             =  $(common_includes) -I$(otapi_headers_dir) 
 
 ot_LDADD                =  otapi/libotapi.la otlib/libot.la $(DEPS_LIBS)
 ot_DEPENDENCIES         =  otapi/libotapi.la otlib/libot.la
@@ -28,8 +29,7 @@ ot_DEPENDENCIES         =  otapi/libotapi.la otlib/libot.la
 
 otserver_SOURCES        =   $(otserver_sources) $(otserver_headers)
 
-otserver_CXXFLAGS       =   $(common_includes) -I$(otserver_headers_dir)
-
+otserver_CXXFLAGS       =   $(common_includes) -I$(otserver_headers_dir) 
 otserver_LDADD          =   otlib/libot.la $(DEPS_LIBS)
 otserver_DEPENDENCIES   =   otlib/libot.la
 
@@ -69,19 +69,18 @@ otapi_headers           =   $(otapi_headers_dir)/main.hpp		\
                             $(otapi_headers_dir)/OT_ME.hpp		\
                             $(otapi_headers_dir)/OTClient.hpp		\
                             $(otapi_headers_dir)/OTServerConnection.hpp
-                    
 
 #### OT Server
+
+otserver_headers_dir    =   $(opentxs_include_dir)/ots
 
 otserver_sources        =   ots/OTClientConnection.cpp	\
                             ots/OTServer.cpp
 
-otserver_headers_dir    =   $(opentxs_include_dir)/ots
-
 otserver_headers        =   $(otserver_headers_dir)/main.hpp			\
                             $(otserver_headers_dir)/OTClientConnection.hpp	\
                             $(otserver_headers_dir)/OTServer.hpp
-                            
+
 if KEYRING_FLATFILE
 
 otserver_CXXFLAGS       += -DOT_KEYRING_FLATFILE
