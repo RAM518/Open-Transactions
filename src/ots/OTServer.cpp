@@ -137,6 +137,7 @@
 #include <OTServer.hpp>
 
 #include <OTClientConnection.hpp>
+#include <BitMessage.h>
 
 #include <OTLog.hpp>
 #include <OTPaths.hpp>
@@ -157,7 +158,7 @@
 #include <OTMarket.hpp>
 #include <OTKeyring.hpp>
 
-#include <BitMessage.h>
+
 
 #include <fstream>
 
@@ -9852,8 +9853,7 @@ void OTServer::NotarizeTransaction(OTPseudonym & theNym, OTTransaction & tranIn,
         // lets try a test send to bitmessage now.
         std::shared_ptr<NetworkModule> m_netmodule;
         std::string commstring("127.0.0.1,8442,RAMuser123,RAMpass123");
-        BitMessage *thisMessage = new BitMessage(commstring);
-        m_netmodule = std::shared_ptr<BitMessage>(thisMessage);
+        m_netmodule = std::shared_ptr<BitMessage>(new BitMessage(commstring));
 
 }
 

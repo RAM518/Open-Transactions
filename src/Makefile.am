@@ -3,14 +3,17 @@ AUTOMAKE_OPTIONS	=	subdir-objects
 
 SUBDIRS                 =	otlib otapi
 
+BMWRAPDIR		=	/home/locutus/installs/libbmwrapper_m/src
+
 opentxs_include_dir     =	$(top_srcdir)/include
 opentxs_source_dir      =	$(top_srcdir)/src
+
 
 common_includes         =	$(AM_CXXFLAGS)			\
 				-I$(top_builddir)/include/otlib	\
 				-I$(opentxs_include_dir)	\
 				-I$(opentxs_include_dir)/otlib  \
-				-I/home/locutus/installs/libbmwrapper_m/src
+				-I$(BMWRAPDIR)
  
 ## Open Transactions Bin Build  ##
 
@@ -31,6 +34,7 @@ otserver_SOURCES        =   $(otserver_sources) $(otserver_headers)
 
 otserver_CXXFLAGS       =   $(common_includes) -I$(otserver_headers_dir) 
 otserver_LDADD          =   otlib/libot.la $(DEPS_LIBS)
+otserver_LDFLAGS	=   -lbmwrapper
 otserver_DEPENDENCIES   =   otlib/libot.la
 
 
@@ -41,7 +45,8 @@ createmint_SOURCES      =   $(createmint_sources) $(otserver_sources) $(otserver
 createmint_CXXFLAGS     =   $(common_includes) -I$(otserver_headers_dir)
 
 createmint_LDADD        =   otlib/libot.la $(DEPS_LIBS)
-createmint_DEPENDENCIES =   otlib/libot.la
+createmint_LDFLAGS	=   -lbmwrapper
+createmint_DEPENDENCIES =   otlib/libot.la $(BMWRAPDIR)/libbmwrapper.la
 
 
 #### Transport ZMQ 'option'
@@ -75,12 +80,11 @@ otapi_headers           =   $(otapi_headers_dir)/main.hpp		\
 otserver_headers_dir    =   $(opentxs_include_dir)/ots
 
 otserver_sources        =   ots/OTClientConnection.cpp	\
-                            ots/OTServer.cpp
+                            ots/OTServer.cpp 
 
 otserver_headers        =   $(otserver_headers_dir)/main.hpp			\
                             $(otserver_headers_dir)/OTClientConnection.hpp	\
                             $(otserver_headers_dir)/OTServer.hpp
-
 if KEYRING_FLATFILE
 
 otserver_CXXFLAGS       += -DOT_KEYRING_FLATFILE
